@@ -27,19 +27,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class GUIManager : MonoBehaviour {
 	public static GUIManager instance;
 
 	public GameObject gameOverPanel;
-	public Text yourScoreTxt;
-	public Text highScoreTxt;
+	public TextMeshProUGUI yourScoreTxt;
+	public TextMeshProUGUI timeLeftText;
 
 	public Text scoreTxt;
 	public Text moveCounterTxt;
 
 	private int score;
 	private int moveCounter;
+
+	private float timeLeft;
+	private float timer;
 
 	public int Score
 	{
@@ -76,10 +80,35 @@ public class GUIManager : MonoBehaviour {
 
 
 	void Awake() {
+		timeLeft = 120;
 		moveCounter = 60;
 		moveCounterTxt.text = moveCounter.ToString();
 		instance = GetComponent<GUIManager>();
 	}
+
+    private void Update()
+	{
+		if (timeLeft > 0 && GameManager.instance.gameOver == false)
+		{ 
+			UpdateTimer(); 
+		}
+        else
+        {
+			GameOver();
+        }
+	}
+
+	private void UpdateTimer()
+    {
+		timer += Time.deltaTime;
+		if (timer > 1f)
+		{
+			timeLeft--;
+			timeLeftText.SetText(timeLeft.ToString());
+			timer = 0f;
+		}
+	}
+
 
 	// Show the game over panel
 	public void GameOver() {
@@ -87,14 +116,7 @@ public class GUIManager : MonoBehaviour {
 
 		gameOverPanel.SetActive(true);
 
-		if (score > PlayerPrefs.GetInt("HighScore")) {
-			PlayerPrefs.SetInt("HighScore", score);
-			highScoreTxt.text = "New Best: " + PlayerPrefs.GetInt("HighScore").ToString();
-		} else {
-			highScoreTxt.text = "Best: " + PlayerPrefs.GetInt("HighScore").ToString();
-		}
-
-		yourScoreTxt.text = score.ToString();
+		yourScoreTxt.SetText(score.ToString());
 	}
 
 	private IEnumerator WaitForShifting()

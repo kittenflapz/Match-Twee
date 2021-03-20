@@ -39,6 +39,8 @@ public class Tile : MonoBehaviour {
 
 	private bool matchFound = false;
 
+	private int matchesNeededForPoof;
+
 
 	void Awake() {
 		render = GetComponent<SpriteRenderer>();
@@ -56,6 +58,25 @@ public class Tile : MonoBehaviour {
 		render.color = Color.white;
 		previousSelected = null;
 	}
+
+	public void SetMatchesNeeded(DifficultyLevel difficultyLevel)
+    {
+		switch (difficultyLevel)
+        {
+			case DifficultyLevel.EASY:
+				matchesNeededForPoof = 2;
+				break;
+			case DifficultyLevel.MEDIUM:
+				matchesNeededForPoof = 3;
+				break;
+			case DifficultyLevel.HARD:
+				matchesNeededForPoof = 4;
+				break;
+			default:
+				matchesNeededForPoof = 2;
+				break;
+		}
+    }
 
 	void OnMouseDown()
 	{
@@ -104,6 +125,7 @@ public class Tile : MonoBehaviour {
 		render2.sprite = render.sprite; 
 		render.sprite = tempSprite;
 		SFXManager.instance.PlaySFX(Clip.Swap);
+		GUIManager.instance.MoveCounter--;
 	}
 
 
@@ -148,7 +170,7 @@ public class Tile : MonoBehaviour {
 		{
 			matchingTiles.AddRange(FindMatch(paths[i]));
 		}
-		if (matchingTiles.Count >= 2) 
+		if (matchingTiles.Count >= matchesNeededForPoof) 
 		{
 			for (int i = 0; i < matchingTiles.Count; i++) 
 			{
@@ -172,7 +194,7 @@ public class Tile : MonoBehaviour {
 			StopCoroutine(BoardManager.instance.FindNullTiles());
 			StartCoroutine(BoardManager.instance.FindNullTiles());
 			SFXManager.instance.PlaySFX(Clip.Clear);
-			GUIManager.instance.MoveCounter--;
+		
 		}
 	}
 }

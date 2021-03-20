@@ -1,4 +1,9 @@
-﻿/*
+﻿// Catt Symonds
+// 101209214
+// Adapted from https://www.raywenderlich.com/673-how-to-make-a-match-3-game-in-unity
+
+
+/*
  * Copyright (c) 2017 Razeware LLC
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
